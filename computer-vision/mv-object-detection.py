@@ -4,7 +4,7 @@ import cv2
 cap = cv2.VideoCapture(0)
 
 #Initialize the background subtractor
-bg_subtractor = cv2.createBackgroundSubtractorMOG2(history=500, varThreshold=50, detectShadows=True)
+bg_subtractor = cv2.createBackgroundSubtractorMOG2(history=500, varThreshold=50, detectShadows=False)
 
 
 while True:
@@ -34,8 +34,11 @@ while True:
         if cv2.contourArea(contour) > 500:
             x, y, w, h = cv2.boundingRect(contour)
             cv2.rectangle(frame, (x,y), (x+w, y+h), (0, 255, 0), 2)
+            text = "Moving object detected"
 
 
+    #Display the status message on the frame 
+    cv2.putText(frame, text, (10, 20), cv2.FONT_HERSHEY_SIMPLEX, 1.0, (0, 0, 255), 2)
     #Display the original frame with bounding boxes
     cv2.imshow('Moving Object Detection', frame)
 
