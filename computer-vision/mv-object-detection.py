@@ -21,10 +21,25 @@ while True:
     #Apply background subtraction to get the foreground mask
     fg_mask = bg_subtractor.apply(frame)
 
+    # cv2.imshow("before noise ", fg_mask)
+    #Removing noise and small objects using morphological operation (optional)
+    kernel = cv2.getStructuringElement(cv2.MORPH_ELLIPSE, (3, 3))
+    fg_mask = cv2.morphologyEx(fg_mask, cv2.MORPH_OPEN, kernel)
 
-    #Removing noise and small oject
+    #Find contours in the foreground mask
+    contours, _ = cv2.findContours(fg_mask, cv2.RETR_EXTERNAL, cv2.CHAIN_APPROX_SIMPLE )
+
+    #Draw bounding boxes around detected moving objects
+    for contour in contours:
+        if cv2.contourArea(contour) > 500:
+            x, y, w, h = cv2.boundingRect(contour)
+            cv2.rectangle(frame, (x,y), (x+w, y+h), (0, 255, 0), 2)
 
 
+    #Display the original frame with bounding boxes
+    cv2.imshow('Moving Object Detection', frame)
+
+    #Display the foreground mask (for visualization purposes)
     cv2.imshow('Foreground Mask', fg_mask)
 
 
